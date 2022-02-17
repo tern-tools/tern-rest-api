@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2019 VMware, Inc. All Rights Reserved.
+# Copyright (c) 2022 VMware, Inc. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2-Clause
 from flask_restx import Namespace, Resource, fields
 
-from tern_api.api.v1.commom_models import (
+from tern_api.api.v1.common_models import (
     async_response_model,
     error_model,
     report_model,

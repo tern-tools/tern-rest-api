@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2017-2021 VMware, Inc. All Rights Reserved.
+# Copyright (c) 2017-2021 == Inc. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2-Clause
 from tern.utils.general import VersionInfo
 

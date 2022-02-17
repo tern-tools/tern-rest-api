@@ -23,21 +23,21 @@ tern reports can take a while to be generated.
   sequenceDiagram
     participant User
     participant API
-    participant Term
+    participant Tern
     User->>API: GET /api/v1/version
     API-->>User: 200 OK, JSON with version data
     User->>API: GET /api/v1/reports
     API-->>User: 200 OK, JSON with request id
     User->>API: GET /api/v1/reports/status
     API-->>User: 200 OK, JSON with status RUNNING
-    API->>Term: Process the request caling asynchronous
-    Term->>Term: Processing
+    API->>Tern: Process the request caling asynchronous
+    Tern->>Tern: Processing
     loop
     User->>API: GET /api/v1/reports/status
-    Term->>Term: Processing
+    Tern->>Tern: Processing
     API-->>User: 200 OK, JSON with status RUNNING or UNKOWN
     end
-    Term->>API: Provides the answer for the id
+    Tern->>API: Provides the answer for the id
     User->>API: GET /api/v1/reports/status
     API-->>User: 200 OK, JSON with status FAILED with error or DONE with report
 ```

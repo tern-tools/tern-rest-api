@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2019 VMware, Inc. All Rights Reserved.
+# Copyright (c) 2022 VMware, Inc. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2-Clause
 import json
 import logging
@@ -8,7 +8,7 @@ import logging
 from flask_restx import Api
 
 from tern_api import __version__, tern_api
-from tern_api.api.v1.commom_models import api_models_namespace
+from tern_api.api.v1.common_models import api_models_namespace
 from tern_api.api.v1.reports import ns as report_v1
 from tern_api.api.v1.version import ns as version_v1
 
