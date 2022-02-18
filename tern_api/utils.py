@@ -8,6 +8,7 @@ from typing import Any, Dict
 
 from attr import asdict
 from flask import jsonify
+from flask.wrappers import Response
 
 
 @dataclass
@@ -16,10 +17,21 @@ class TernAPIResponse:
     status_code: int = 200
     errors: Dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts the dataclass data to a dictionary.
+
+        :return: Response data as a dictionary
+        :rtype: ``dict``
+        """
         return asdict(self)
 
-    def to_response(self):
+    def to_response(self) -> Response:
+        """Converts the dataclass data to a Flask jsonified format, building a
+        consistent response format for the requests to the API.
+
+        :return: Flask Response
+        :rtype: ``flask.wrappers.Response``
+        """
         response_data = dict()
         response_data["data"] = self.data
         if self.errors:

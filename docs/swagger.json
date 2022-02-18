@@ -12,7 +12,8 @@
                         }
                     }
                 },
-                "summary": "Tern report",
+                "summary": "Tern BoM report",
+                "description": "**Note**: This request will be processed assynchronous.",
                 "operationId": "post_report",
                 "parameters": [
                     {
@@ -39,7 +40,7 @@
                         }
                     }
                 },
-                "summary": "Tern report status/result",
+                "summary": "Request Tern BoM report status/result",
                 "operationId": "post_report_status",
                 "parameters": [
                     {
@@ -72,7 +73,7 @@
                         }
                     }
                 },
-                "summary": "Tern repoort",
+                "summary": "Get Tern Rest API base versions",
                 "operationId": "get_version",
                 "tags": [
                     "/version"
@@ -98,7 +99,7 @@
         },
         {
             "name": "/reports",
-            "description": "Tern Report"
+            "description": "Tern Bill of Materials Report"
         }
     ],
     "definitions": {

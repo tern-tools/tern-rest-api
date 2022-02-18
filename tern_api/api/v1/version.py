@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2022 VMware, Inc. All Rights Reserved.
@@ -40,7 +41,7 @@ class Version(Resource):
     @ns.response(400, "Bad request")
     @ns.response(500, "Internal Server Error")
     def get(self):
-        """Tern repoort"""
+        """Get Tern Rest API base versions"""
 
         response = get_version()
         return response.to_response()

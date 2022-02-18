@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2022 VMware, Inc. All Rights Reserved.
@@ -35,7 +36,7 @@ def api_request():
                     )
 
                 else:
-                    raise ValueError("Invalid HTTP methord")
+                    raise ValueError("Invalid HTTP method")
 
                 return response
 

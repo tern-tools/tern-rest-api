@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2022 VMware, Inc. All Rights Reserved.
@@ -10,7 +11,7 @@ from tern_api.api.v1.common_models import (
     report_model,
 )
 
-ns = Namespace("/reports", description="Tern Report")
+ns = Namespace("/reports", description="Tern Bill of Materials Report")
 
 
 @ns.route("")
@@ -47,7 +48,10 @@ class Report(Resource):
     @ns.response(200, "OK", report_response_request)
     @ns.expect(report_parameters)
     def post(self):
-        """Tern report"""
+        """Tern BoM report
+
+        **Note**: This request will be processed assynchronous.
+        """
 
 
 @ns.route("/status")
@@ -85,4 +89,4 @@ class ReportStatus(Resource):
     @ns.response(200, "OK", report_status_response)
     @ns.expect(report_status_parameters)
     def post(self):
-        """Tern report status/result"""
+        """Request Tern BoM report status/result"""
