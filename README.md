@@ -3,7 +3,8 @@
 ---
 **NOTE**
 
-This project still not functional. Please wait for the first functional release (0.0.1)
+This project still not functional. Please wait for the first functional release
+(0.0.1)
 
 ---
 

@@ -10,7 +10,7 @@ setup(
     version="0.0.1",
     url="https://github.com/tern/tern-rest-api",
     author="VMware Inc",
-    author_email="",
+    author_email="rjudge@vmware.com",
     description="Tern REST API",
     packages=find_packages(),
     install_requires=["flask", "flask-restx", "tern"],
