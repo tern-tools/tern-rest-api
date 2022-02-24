@@ -1,0 +1,293 @@
+{
+    "swagger": "2.0",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/report": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/report_response_request"
+                        }
+                    }
+                },
+                "summary": "Tern BoM report",
+                "description": "**Note**: This request will be processed assynchronous.",
+                "operationId": "post_report",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/report_parameters"
+                        }
+                    }
+                ],
+                "tags": [
+                    "/reports"
+                ]
+            }
+        },
+        "/api/v1/report/status": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/report_status_response"
+                        }
+                    }
+                },
+                "summary": "Request Tern BoM report status/result",
+                "operationId": "post_report_status",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/report_status_parameters"
+                        }
+                    }
+                ],
+                "tags": [
+                    "/reports"
+                ]
+            }
+        },
+        "/api/v1/version": {
+            "get": {
+                "responses": {
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/version_response"
+                        }
+                    }
+                },
+                "summary": "Get Tern Rest API base versions",
+                "operationId": "get_version",
+                "tags": [
+                    "/version"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "Tern REST API",
+        "version": "0.0.1-dev",
+        "description": "Tern Project REST API"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "/version",
+            "description": "Tern REST API Version"
+        },
+        {
+            "name": "/reports",
+            "description": "Tern Bill of Materials Report"
+        }
+    ],
+    "definitions": {
+        "version_response": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/version_data_model"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "version_data_model": {
+            "required": [
+                "api",
+                "tern"
+            ],
+            "properties": {
+                "tern": {
+                    "type": "string",
+                    "description": "Tern current version",
+                    "example": "2.9.1"
+                },
+                "api": {
+                    "type": "string",
+                    "description": "Tern current version",
+                    "example": "1.0.0"
+                }
+            },
+            "type": "object"
+        },
+        "error_model": {
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "description": "error message",
+                    "example": "Failed during the processing."
+                }
+            },
+            "type": "object"
+        },
+        "report_parameters": {
+            "required": [
+                "image",
+                "tag"
+            ],
+            "properties": {
+                "registry": {
+                    "type": "string",
+                    "description": "Registry Server",
+                    "default": "https://registry.hub.docker.com",
+                    "example": "http://registry.example.com"
+                },
+                "image": {
+                    "type": "string",
+                    "description": "Image name",
+                    "example": "photon"
+                },
+                "tag": {
+                    "type": "string",
+                    "description": "Image tag",
+                    "example": "3.0"
+                }
+            },
+            "type": "object"
+        },
+        "report_response_request": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/async_response_model"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "async_response_model": {
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "description": "Status message",
+                    "example": "Request submitted."
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Unique Identification for request",
+                    "example": "19f035a711644eab84ef5a38ceb5572e"
+                }
+            },
+            "type": "object"
+        },
+        "report_status_parameters": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique Identification for request",
+                    "example": "19f035a711644eab84ef5a38ceb5572e"
+                }
+            },
+            "type": "object"
+        },
+        "report_status_response": {
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/data_status_response"
+                },
+                "error": {
+                    "$ref": "#/definitions/error_model"
+                }
+            },
+            "type": "object"
+        },
+        "data_status_response": {
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "Status of request",
+                    "example": "DONE",
+                    "enum": [
+                        "UNKNOWN",
+                        "FAILED",
+                        "DONE"
+                    ]
+                },
+                "result": {
+                    "$ref": "#/definitions/report_mode"
+                }
+            },
+            "type": "object"
+        },
+        "report_mode": {
+            "properties": {
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/image_report_mode"
+                    }
+                }
+            },
+            "type": "object"
+        },
+        "image_report_mode": {
+            "properties": {
+                "image": {
+                    "$ref": "#/definitions/image_report_data"
+                }
+            },
+            "type": "object"
+        },
+        "image_report_data": {
+            "required": [
+                "name",
+                "repotag",
+                "tag"
+            ],
+            "properties": {
+                "repotag": {
+                    "type": "string",
+                    "example": "photon:3.0"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "photon"
+                },
+                "tag": {
+                    "type": "string",
+                    "example": "3.0"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "responses": {
+        "ParseError": {
+            "description": "When a mask can't be parsed"
+        },
+        "MaskError": {
+            "description": "When any error occurs on mask"
+        }
+    },
+    "host": "localhost"
+}
