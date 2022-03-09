@@ -59,7 +59,16 @@ $ pipenv install -d
 
 ### Running the development Tern REST API
 
+## As a Docker Container
+```shell
+$ make serve-dev
+```
+Open http://localhost/ in your browser.
 
+Changing the source code will automatically reload the server inside the
+container and makes the development easier.
+
+## On your local machine
 Runing the API locally
 
 ```shell

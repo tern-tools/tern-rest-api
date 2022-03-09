@@ -3,8 +3,10 @@
 #
 # Copyright (c) 2022 VMware, Inc. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2-Clause
+from flask import request
 from flask_restx import Namespace, Resource, fields
 
+from tern_api import reports, tern_app
 from tern_api.api.v1.common_models import (
     async_response_model,
     error_model,
@@ -22,8 +24,8 @@ class Report(Resource):
             "registry": fields.String(
                 description="Registry Server",
                 required=False,
-                default="https://registry.hub.docker.com",
-                example="http://registry.example.com",
+                default=tern_app.config["TERN_DEFAULT_REGISTRY"],
+                example=tern_app.config["TERN_DEFAULT_REGISTRY"],
             ),
             "image": fields.String(
                 description="Image name",
@@ -34,6 +36,11 @@ class Report(Resource):
                 description="Image tag",
                 required=True,
                 example="3.0",
+            ),
+            "cache": fields.Boolean(
+                description="Use cache data if available?",
+                required=True,
+                example=True,
             ),
         },
     )
@@ -52,6 +59,9 @@ class Report(Resource):
 
         **Note**: This request will be processed assynchronous.
         """
+        payload = request.json
+        response = reports.request(payload)
+        return response.to_response()
 
 
 @ns.route("/status")
@@ -72,8 +82,8 @@ class ReportStatus(Resource):
             "status": fields.String(
                 description="Status of request",
                 required=True,
-                example="DONE",
-                enum=["UNKNOWN", "FAILED", "DONE"],
+                example="FINISH",
+                enum=["UNKNOWN", "FINISH", "RUNNING", "FAIL"],
             ),
             "result": fields.Nested(report_model),
         },
@@ -90,3 +100,7 @@ class ReportStatus(Resource):
     @ns.expect(report_status_parameters)
     def post(self):
         """Request Tern BoM report status/result"""
+
+        payload = request.json
+        response = reports.status(payload.get("id"))
+        return response.to_response()
