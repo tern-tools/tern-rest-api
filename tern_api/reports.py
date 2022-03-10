@@ -154,7 +154,7 @@ def status(task_id: str) -> TernAPIResponse:
     Args:
         task_id: the unique task ID
     """
-    data_response = DataResponse(id=task_id, status=task_status.UNKNOWN.value)
+    data_response = DataResponse(id=task_id, status=task_status.PENDING.value)
 
     try:
         if not tern_tasks.futures.done(task_id):
