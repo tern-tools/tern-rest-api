@@ -81,16 +81,17 @@ def tern_report(
     """
 
     if cache:
+        # If a API user is using the cache, first try to load the cached
+        # instead doing a new call to the tern.
         try:
             with open(cache_file, "r") as f:
                 report = json.load(f)
             return report
-
         except FileNotFoundError:
+            # call the tern and dump it to the cache
             report = tern(command)
             with open(cache_file, "w") as f:
                 json.dump(report, f, indent=2)
-
     else:
         report = tern(command)
 
