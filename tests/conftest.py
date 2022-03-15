@@ -6,15 +6,15 @@
 import pytest
 from werkzeug.test import TestResponse
 
-from app import tern_api
+from app import tern_app
 from tests.utils import RequestDataTest
 
 
 @pytest.fixture
 def api_request():
     def _api_request(request_data: RequestDataTest) -> TestResponse:
-        with tern_api.test_client() as api_client:
-            with tern_api.app_context():
+        with tern_app.test_client() as api_client:
+            with tern_app.app_context():
                 if request_data.method.lower() == "get":
                     response = api_client.get(
                         request_data.endpoint, json=request_data.payload
