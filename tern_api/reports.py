@@ -50,6 +50,9 @@ def tern(command: list) -> Dict[str, Any]:
     """
     logging.debug(command)
 
+    if type(command) != list:
+        raise TypeError("command must be a list")
+
     tern_cmd = subprocess.run(command, capture_output=True)
     if tern_cmd.stdout:
         json_report = json.loads(tern_cmd.stdout)
@@ -61,7 +64,7 @@ def tern(command: list) -> Dict[str, Any]:
             # Is important to return a specific error if the error comes from
             # tern CLI, it means the task FINISH, for example, invalid image.
             logging.info(tern_cmd.stderr)
-            raise TernError(tern_cmd.stderr)
+            raise TernError(tern_cmd.stderr.decode())
 
 
 @tern_tasks.job
@@ -79,7 +82,6 @@ def tern_report(
     Return:
         Report as Dictionary
     """
-
     if cache:
         # If a API user is using the cache, first try to load the cached
         # instead doing a new call to the tern.
@@ -88,6 +90,7 @@ def tern_report(
                 report = json.load(f)
             return report
         except FileNotFoundError:
+            logging.debug(f"Cache file not found: {cache_file}")
             # call the tern and dump it to the cache
             report = tern(command)
             with open(cache_file, "w") as f:
@@ -98,7 +101,7 @@ def tern_report(
     return report
 
 
-def request(payload: dict) -> TernAPIResponse:
+def submit(payload: dict) -> TernAPIResponse:
     """
     Get the Payload from API and prepare to request the report.
     The request will be handled in the background as tern tasks.
@@ -111,7 +114,6 @@ def request(payload: dict) -> TernAPIResponse:
     """
     TERN_API_CACHE_DIR = tern_app.config["TERN_API_CACHE_DIR"]
     TERN_DEFAULT_REGISTRY = tern_app.config["TERN_DEFAULT_REGISTRY"]
-
     task_id = uuid4().hex
     registry = payload.get(
         "registry",
@@ -131,7 +133,7 @@ def request(payload: dict) -> TernAPIResponse:
         registry_image_tag = f"{image}:{tag}"
 
     command = ["tern", "report", "-i", registry_image_tag, "-f", "json"]
-    logging.info(command)
+    logging.debug(command)
 
     tern_report.submit_stored(
         task_id, command=command, cache=cache, cache_file=cache_file
@@ -146,10 +148,10 @@ def status(task_id: str) -> TernAPIResponse:
     Request to the status/result from the tern tasks.
 
     The tern tasks can have basically the following status:
-    - UNKNOWN: Not known (yet) by the task manager (initial status).
+    - PENDING: Not known (yet) by the task manager (initial status).
     - RUNNING: Task is running by the task manager.
-    - FINISH : Task has fineshed in the task manager.
-    - FAIL   : Task has failed before finished.
+    - SUCCESS: Task has fineshed in the task manager.
+    - FAILURE: Task has failed before finished.
 
     Args:
         task_id: the unique task ID
@@ -159,8 +161,15 @@ def status(task_id: str) -> TernAPIResponse:
     try:
         if not tern_tasks.futures.done(task_id):
             status = tern_tasks.futures._state(task_id)
-            if status:
+            if status == task_status.RUNNING.value:
                 data_response.status = status
+
+            else:
+                # if the task state is not done, then the task is still running
+                # we can't know the status, so we return the status as pending
+                # and remove the task from the task manager
+                data_response.status = task_status.PENDING.value
+                tern_tasks.futures.pop(task_id)
 
             return TernAPIResponse(data_response.to_dict())
 
@@ -181,7 +190,7 @@ def status(task_id: str) -> TernAPIResponse:
     except:  # noqa
         data_response.status = task_status.FAILURE.value
         data_response.message = (
-            f"Task couln't finish due: {str(sys.exc_info())}"
+            f"Task could not finish due: {str(sys.exc_info())}"
         )
 
     return TernAPIResponse(data_response.to_dict())

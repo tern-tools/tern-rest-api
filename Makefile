@@ -5,7 +5,17 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 build-dev:
-	docker build -t tern-rest-api:dev .
+	docker-compose build --force-rm tern-rest-api
 
 serve-dev: build-dev
-	docker run --rm --name tern-rest-api -e ENVIRONMENT=DEVELOPMENT --privileged -v /var/run/docker.sock:/var/run/docker.sock -v $(PWD):/opt/tern-rest-api -p 5001:80 tern-rest-api:dev
+	docker-compose up --remove-orphans
+
+tests: build-dev
+	docker-compose run --rm --volume=$(PWD):/opt/tern-rest-api --entrypoint="/bin/sh" tern-rest-api -c 'pip install tox && tox'
+
+stop:
+	docker-compose down -v
+
+update-requirements:
+	pipenv lock -r > requirements.txt
+	pipenv lock -r -d > requirements-dev.txt

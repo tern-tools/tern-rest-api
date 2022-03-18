@@ -10,7 +10,7 @@ from flask_restx import Api
 
 from tern_api import __version__, tern_app
 from tern_api.api.v1.common_models import api_models_namespace
-from tern_api.api.v1.reports import ns as report_v1
+from tern_api.api.v1.reports import ns as reports_v1
 from tern_api.api.v1.version import ns as version_v1
 
 logging.basicConfig(
@@ -35,7 +35,7 @@ api = Api(
 
 api.add_namespace(api_models_namespace)
 api.add_namespace(version_v1, path="/api/v1/version")
-api.add_namespace(report_v1, path="/api/v1/report")
+api.add_namespace(reports_v1, path="/api/v1/reports")
 
 
 def export_swagger_json(filepath):

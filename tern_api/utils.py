@@ -6,7 +6,6 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict
 
-from attr import asdict
 from flask import jsonify
 from flask.wrappers import Response
 
@@ -16,14 +15,6 @@ class TernAPIResponse:
     data: Dict[str, Any] = field(default_factory=dict)
     status_code: int = 200
     errors: Dict[str, Any] = field(default_factory=dict)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Converts the dataclass data to a dictionary.
-
-        :return: Response data as a dictionary
-        :rtype: ``dict``
-        """
-        return asdict(self)
 
     def to_response(self) -> Response:
         """Converts the dataclass data to a Flask jsonified format, building a

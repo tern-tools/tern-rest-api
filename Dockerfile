@@ -16,14 +16,15 @@ RUN echo "deb http://deb.debian.org/debian bullseye main" > /etc/apt/sources.lis
     skopeo \
     && rm -rf /var/lib/apt/lists/*
 
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache -r ./requirements.txt
+
 RUN mkdir /opt/tern-rest-api
 
 ADD . /opt/tern-rest-api
 WORKDIR /opt/tern-rest-api
-RUN pip install --no-cache -r ./requirements.txt
 
-ENV TERN_API_CACHE_DIR=/var/opt/tern-rest-api/cached
+ENV TERN_API_CACHE_DIR=/var/opt/tern-rest-api/cache
 ENV TERN_DEFAULT_REGISTRY="registry.hub.docker.com"
 
-ENV FLASK_APP=/opt/tern-rest-api/app.py
-CMD ["bash", "docker_start.sh"]
+ENTRYPOINT [ "bash", "docker_start.sh" ]

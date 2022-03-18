@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [[ ${ENVIRONMENT^^} == "DEVELOPMENT" ]]; then
-    flask run --reload --debugger -h 0.0.0.0 -p 80
+    echo "Starting tern-rest-api in development mode"
+    gunicorn --reload -b 0.0.0.0:80 app:tern_app
 else
-    gunicorn --workers=1 -b 0.0.0.0:80 app:tern_api
+    gunicorn -b 0.0.0.0:80 app:tern_app
 fi

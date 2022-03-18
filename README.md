@@ -68,6 +68,8 @@ Open http://localhost/ in your browser.
 Changing the source code will automatically reload the server inside the
 container and makes the development easier.
 
+You can stop the sever using ``Ctrl+C`` and running ``make stop``
+
 ## On your local machine
 Runing the API locally
 
@@ -81,7 +83,12 @@ Open http://localhost:5000/ in your browser.
 
 We use [Tox](https://tox.wiki/en/latest/) to manage running the tests.
 
-Running tests
+## As a Docker Container
+```shell
+$ make tests
+```
+
+## On your local machine
 ```shell
 $ tox
 ```
@@ -106,6 +113,5 @@ $ pipenv update
 
 Updating the ``requirements.txt`` and ``requirements-dev.txt``
 ```shell
-$ pipenv lock -r > requirements.txt
-$ pipenv lock -r -d > requirements-dev.txt
+$ make update-requirements
 ```

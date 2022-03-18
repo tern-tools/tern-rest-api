@@ -6,7 +6,7 @@ from tern_api.version import VersionInfo, version
 from tests.utils import RequestDataTest
 
 
-class TestVersion:
+class TestAPIVersion:
     def test_version(self, api_request):
         expected_response = {
             "api": version,
