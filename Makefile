@@ -19,3 +19,6 @@ stop:
 update-requirements:
 	pipenv lock -r > requirements.txt
 	pipenv lock -r -d > requirements-dev.txt
+
+doc:
+	python -c "import app; app.export_swagger_json('docs/swagger.json')"

@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "basePath": "/",
     "paths": {
-        "/api/v1/report": {
+        "/api/v1/reports": {
             "post": {
                 "responses": {
                     "200": {
@@ -30,7 +30,7 @@
                 ]
             }
         },
-        "/api/v1/report/status": {
+        "/api/v1/reports/status": {
             "post": {
                 "responses": {
                     "200": {
@@ -145,15 +145,14 @@
         },
         "report_parameters": {
             "required": [
+                "cache",
                 "image",
                 "tag"
             ],
             "properties": {
                 "registry": {
                     "type": "string",
-                    "description": "Registry Server",
-                    "default": "https://registry.hub.docker.com",
-                    "example": "http://registry.example.com"
+                    "description": "Registry Server"
                 },
                 "image": {
                     "type": "string",
@@ -164,6 +163,11 @@
                     "type": "string",
                     "description": "Image tag",
                     "example": "3.0"
+                },
+                "cache": {
+                    "type": "boolean",
+                    "description": "Use cache data if available?",
+                    "example": true
                 }
             },
             "type": "object"
@@ -181,6 +185,7 @@
         },
         "async_response_model": {
             "required": [
+                "cache",
                 "id"
             ],
             "properties": {
@@ -193,6 +198,11 @@
                     "type": "string",
                     "description": "Unique Identification for request",
                     "example": "19f035a711644eab84ef5a38ceb5572e"
+                },
+                "cache": {
+                    "type": "boolean",
+                    "description": "Request uses cache?",
+                    "example": true
                 }
             },
             "type": "object"
@@ -220,21 +230,38 @@
         },
         "data_status_response": {
             "required": [
+                "cache",
                 "status"
             ],
             "properties": {
+                "cache": {
+                    "type": "boolean",
+                    "description": "Requested using cache?",
+                    "example": true
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Unique Identification for request",
+                    "example": "19f035a711644eab84ef5a38ceb5572e"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Message"
+                },
+                "report": {
+                    "$ref": "#/definitions/report_mode"
+                },
                 "status": {
                     "type": "string",
                     "description": "Status of request",
-                    "example": "DONE",
+                    "example": "SUCCESS",
                     "enum": [
-                        "UNKNOWN",
-                        "FAILED",
-                        "DONE"
+                        "PENDING",
+                        "RECEIVED",
+                        "RUNNING",
+                        "SUCCESS",
+                        "FAILURE"
                     ]
-                },
-                "result": {
-                    "$ref": "#/definitions/report_mode"
                 }
             },
             "type": "object"
@@ -260,6 +287,7 @@
         },
         "image_report_data": {
             "required": [
+                "cache",
                 "name",
                 "repotag",
                 "tag"
@@ -276,6 +304,11 @@
                 "tag": {
                     "type": "string",
                     "example": "3.0"
+                },
+                "cache": {
+                    "type": "string",
+                    "description": "Use cache if available?",
+                    "default": true
                 }
             },
             "type": "object"
