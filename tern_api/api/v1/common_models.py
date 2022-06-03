@@ -18,21 +18,6 @@ error_model = api_models_namespace.model(
     },
 )
 
-async_response_model = api_models_namespace.model(
-    "async_response_model",
-    {
-        "message": fields.String(
-            description="Status message",
-            requored=True,
-            example="Request submitted.",
-        ),
-        "id": fields.String(
-            description="Unique Identification for request",
-            required=True,
-            example="19f035a711644eab84ef5a38ceb5572e",
-        ),
-    },
-)
 
 image_report_data = api_models_namespace.model(
     "image_report_data",
@@ -52,6 +37,12 @@ image_report_data = api_models_namespace.model(
             example="3.0",
             required=True,
         ),
+        "cache": fields.String(
+            description="Use cache if available?",
+            exampple=True,
+            required=True,
+            default=True,
+        ),
     },
 )
 image_report_model = api_models_namespace.model(
@@ -59,4 +50,25 @@ image_report_model = api_models_namespace.model(
 )
 report_model = api_models_namespace.model(
     "report_mode", {"images": fields.List(fields.Nested(image_report_model))}
+)
+
+async_response_model = api_models_namespace.model(
+    "async_response_model",
+    {
+        "message": fields.String(
+            description="Status message",
+            requored=True,
+            example="Request submitted.",
+        ),
+        "id": fields.String(
+            description="Unique Identification for request",
+            required=True,
+            example="19f035a711644eab84ef5a38ceb5572e",
+        ),
+        "cache": fields.Boolean(
+            description="Request uses cache?",
+            required=True,
+            example=True,
+        ),
+    },
 )

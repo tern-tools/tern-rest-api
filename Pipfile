@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 flask-restx = "*"
 tern = "*"
+flask-executor = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "*"

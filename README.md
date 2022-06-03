@@ -48,7 +48,7 @@ files to help build your virtual environment.
 We also recommend using [Pipenv](https://pipenv.pypa.io/en/latest/) to manage your virtual environment.
 
 ```shell
-$ Pip install pipenv
+$ pip install pipenv
 $ pipenv shell
 ```
 
@@ -59,7 +59,26 @@ $ pipenv install -d
 
 ### Running the development Tern REST API
 
+#### As a Docker Container
+```shell
+$ make serve-dev
+```
+Open http://localhost/ in your browser.
 
+Changing the source code will automatically reload the server inside the
+container and makes the development easier.
+
+You can stop the sever using ``Ctrl+C`` and running ``make stop``
+
+Container environment variables:
+
+- ``TERN_API_CACHE_DIR``: The directory where the tern reports are cached.
+Default: ``/var/opt/tern-rest-api/cache``
+- ``TERN_DEFAULT_REGISTRY``: Optional default registry to use when no registry
+is passed to the API requests. Default: ``docker.io``
+
+
+#### On your local machine
 Runing the API locally
 
 ```shell
@@ -68,16 +87,29 @@ $ flask run --reload
 
 Open http://localhost:5000/ in your browser.
 
-## Tests
+### Tests
 
 We use [Tox](https://tox.wiki/en/latest/) to manage running the tests.
 
-Running tests
+#### As a Docker Container
+```shell
+$ make tests
+```
+
+#### On your local machine
 ```shell
 $ tox
 ```
 
-## Managing the requirements
+### Documentation
+
+```shell
+$ make doc
+```
+
+The documentation tests are done also by ``tox``.
+
+### Requirements
 
 Installing new requirements
 
@@ -97,6 +129,5 @@ $ pipenv update
 
 Updating the ``requirements.txt`` and ``requirements-dev.txt``
 ```shell
-$ pipenv lock -r > requirements.txt
-$ pipenv lock -r -d > requirements-dev.txt
+$ make update-requirements
 ```

@@ -6,15 +6,25 @@
 import pytest
 from werkzeug.test import TestResponse
 
-from app import tern_api
+from app import tern_app
 from tests.utils import RequestDataTest
 
 
+@pytest.fixture(scope="module")
+def test_tern_app():
+    # Configuration
+    tern_app.config["TERN_API_CACHE_DIR"] = "FakeCacheDir"
+    tern_app.config["TERN_DEFAULT_REGISTRY"] = "registry_fake_tests"
+
+    return tern_app
+
+
 @pytest.fixture
-def api_request():
+def api_request(test_tern_app):
     def _api_request(request_data: RequestDataTest) -> TestResponse:
-        with tern_api.test_client() as api_client:
-            with tern_api.app_context():
+        with test_tern_app.test_client() as api_client:
+            with test_tern_app.app_context():
+
                 if request_data.method.lower() == "get":
                     response = api_client.get(
                         request_data.endpoint, json=request_data.payload
@@ -41,3 +51,13 @@ def api_request():
                 return response
 
     return _api_request
+
+
+@pytest.fixture
+def fake_id():
+    class FakeID:
+        @property
+        def hex(self):
+            return "fake-id"
+
+    return FakeID

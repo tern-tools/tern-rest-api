@@ -3,13 +3,16 @@
 #
 # Copyright (c) 2022 VMware, Inc. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2-Clause
+from flask import request
 from flask_restx import Namespace, Resource, fields
 
+from tern_api import constants, tern_app
 from tern_api.api.v1.common_models import (
     async_response_model,
     error_model,
     report_model,
 )
+from tern_api.reports import status, submit
 
 ns = Namespace("/reports", description="Tern Bill of Materials Report")
 
@@ -22,8 +25,8 @@ class Report(Resource):
             "registry": fields.String(
                 description="Registry Server",
                 required=False,
-                default="https://registry.hub.docker.com",
-                example="http://registry.example.com",
+                default=tern_app.config["TERN_DEFAULT_REGISTRY"],
+                example=tern_app.config["TERN_DEFAULT_REGISTRY"],
             ),
             "image": fields.String(
                 description="Image name",
@@ -34,6 +37,11 @@ class Report(Resource):
                 description="Image tag",
                 required=True,
                 example="3.0",
+            ),
+            "cache": fields.Boolean(
+                description="Use cache data if available?",
+                required=True,
+                example=True,
             ),
         },
     )
@@ -46,12 +54,15 @@ class Report(Resource):
     )
 
     @ns.response(200, "OK", report_response_request)
-    @ns.expect(report_parameters)
+    @ns.expect(report_parameters, validate=True)
     def post(self):
         """Tern BoM report
 
         **Note**: This request will be processed assynchronous.
         """
+        payload = request.json
+        response = submit(payload)
+        return response.to_response()
 
 
 @ns.route("/status")
@@ -69,13 +80,28 @@ class ReportStatus(Resource):
     data_status_response = ns.model(
         "data_status_response",
         {
+            "cache": fields.Boolean(
+                description="Requested using cache?",
+                required=True,
+                example=True,
+            ),
+            "id": fields.String(
+                description="Unique Identification for request",
+                required=False,
+                example="19f035a711644eab84ef5a38ceb5572e",
+            ),
+            "message": fields.String(
+                description="Message",
+                required=False,
+                exampple="Request is running",
+            ),
+            "report": fields.Nested(report_model),
             "status": fields.String(
                 description="Status of request",
                 required=True,
-                example="DONE",
-                enum=["UNKNOWN", "FAILED", "DONE"],
+                example=constants.task_status.SUCCESS.value,
+                enum=[s.value for s in constants.task_status],
             ),
-            "result": fields.Nested(report_model),
         },
     )
     report_status_response = ns.model(
@@ -87,6 +113,10 @@ class ReportStatus(Resource):
     )
 
     @ns.response(200, "OK", report_status_response)
-    @ns.expect(report_status_parameters)
+    @ns.expect(report_status_parameters, validate=True)
     def post(self):
         """Request Tern BoM report status/result"""
+
+        payload = request.json
+        response = status(payload.get("id"))
+        return response.to_response()

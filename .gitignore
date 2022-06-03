@@ -1,3 +1,6 @@
+# tern-rest-api specifics
+cached
+docs/.test_swagger.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

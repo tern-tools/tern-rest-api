@@ -1,0 +1,21 @@
+version: '3'
+
+volumes:
+  tern-cache:
+
+services:
+  tern-rest-api:
+    build:
+      context: .
+      args:
+        DEVEL: "yes"
+    command: "bash bash_start.sh"
+    environment:
+      - ENVIRONMENT=development
+      - TERN_DEFAULT_REGISTRY=registry.hub.docker.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - tern-cache:/var/opt/tern-rest-api/cache:z
+      - ./tern_api:/opt/tern-rest-api/tern_api:z
+    ports:
+      - "5001:80"
