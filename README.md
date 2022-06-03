@@ -70,6 +70,14 @@ container and makes the development easier.
 
 You can stop the sever using ``Ctrl+C`` and running ``make stop``
 
+Container environment variables:
+
+- ``TERN_API_CACHE_DIR``: The directory where the tern reports are cached.
+Default: ``/var/opt/tern-rest-api/cache``
+- ``TERN_DEFAULT_REGISTRY``: Optional default registry to use when no registry
+is passed to the API requests. Default: ``docker.io``
+
+
 #### On your local machine
 Runing the API locally
 
